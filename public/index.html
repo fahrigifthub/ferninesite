@@ -131,19 +131,41 @@
       }
     }
 
-    async function fetchPlay() {
-  const q = document.getElementById('queryPlay').value.trim();
-  const box = document.getElementById('resPlay');
-  if (!q) return box.textContent = '❌ Harap isi query.';
-  box.textContent = '⏳ Memuat...';
-  try {
-    const res = await fetch(`/api/play?name=${encodeURIComponent(q)}`);
-    const json = await res.json();
-    box.textContent = JSON.stringify(json, null, 2);
-  } catch (e) {
-    box.textContent = '❌ Error mengambil data';
+    
+  async function fetchPlay() {
+    const q = document.getElementById('queryPlay').value.trim();
+    const box = document.getElementById('resPlay');
+    if (!q) {
+      box.innerHTML = `<span style="color:red;">❌ Harap isi query pencarian lagu.</span>`;
+      return;
+    }
+
+    box.innerHTML = `⏳ Memuat hasil...`;
+
+    try {
+      const res = await fetch(`/api/play?query=${encodeURIComponent(q)}`);
+
+      if (!res.ok) {
+        const errText = await res.text();
+        box.innerHTML = `<span style="color:red;">❌ Gagal ambil data!<br>Status: ${res.status} ${res.statusText}<br>Detail: ${errText}</span>`;
+        return;
+      }
+
+      const json = await res.json();
+
+      if (!json.status) {
+        box.innerHTML = `<span style="color:red;">❌ Error dari server:<br>${json.message || 'Tidak diketahui'}</span>`;
+        return;
+      }
+
+      box.innerHTML = `<pre>${JSON.stringify(json, null, 2)}</pre>`;
+
+    } catch (err) {
+      box.innerHTML = `<span style="color:red;">❌ Gagal mengambil data!<br>Error: ${err.message}</span>`;
+    }
   }
-}
+
+
 
   </script>
 </body>
