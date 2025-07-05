@@ -1,21 +1,107 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-  <title>Fernine API</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Pinterest API Tester</title>
   <style>
-    body { font-family: sans-serif; background: #0e0e0e; color: #fff; padding: 2em; text-align: center; }
-    code { background: #222; padding: 5px; border-radius: 5px; }
-    a { color: #0ff; text-decoration: none; }
+    * {
+      box-sizing: border-box;
+      font-family: 'Segoe UI', sans-serif;
+    }
+    body {
+      background: #0f0f0f;
+      color: #fff;
+      margin: 0;
+      padding: 20px;
+    }
+    h1 {
+      font-size: 1.8rem;
+      text-align: center;
+      margin-bottom: 10px;
+    }
+    .container {
+      max-width: 500px;
+      margin: 0 auto;
+      background: #1a1a1a;
+      border-radius: 12px;
+      padding: 20px;
+      box-shadow: 0 0 20px rgba(0,255,255,0.1);
+    }
+    label {
+      font-size: 1rem;
+      margin-bottom: 5px;
+      display: block;
+    }
+    input[type="text"] {
+      width: 100%;
+      padding: 12px;
+      border: none;
+      border-radius: 8px;
+      background: #2b2b2b;
+      color: #fff;
+      font-size: 1rem;
+    }
+    button {
+      margin-top: 15px;
+      width: 100%;
+      padding: 12px;
+      border: none;
+      background: #00bcd4;
+      color: #fff;
+      font-size: 1rem;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: background 0.3s ease;
+    }
+    button:hover {
+      background: #0097a7;
+    }
+    pre {
+      margin-top: 20px;
+      background: #222;
+      padding: 15px;
+      border-radius: 8px;
+      white-space: pre-wrap;
+      word-break: break-word;
+      font-size: 0.9rem;
+      max-height: 400px;
+      overflow: auto;
+    }
   </style>
 </head>
 <body>
-  <h1>🎯 Fernine API</h1>
-  <p>Selamat datang di API publik buatan Fernine</p>
-  <p>Contoh endpoint:</p>
-  <ul>
-    <li><code>/api/pinterest?query=kucing</code></li>
-    <li><code>/api/instagram?url=https://...</code></li>
-  </ul>
-  <p>🎉 Stay tuned for more!</p>
+  <h1>🔎 Pinterest API Tester</h1>
+  <div class="container">
+    <label for="query">Query Parameter:</label>
+    <input type="text" id="query" placeholder="e.g. cat, anime, nature" />
+
+    <button onclick="fetchData()">Try</button>
+
+    <pre id="responseBox">Response JSON akan tampil di sini...</pre>
+  </div>
+
+  <script>
+    async function fetchData() {
+      const q = document.getElementById('query').value.trim();
+      const box = document.getElementById('responseBox');
+
+      if (!q) {
+        box.textContent = '❌ Harap isi query terlebih dahulu.';
+        return;
+      }
+
+      box.textContent = '⏳ Memuat data...';
+
+      try {
+        const res = await fetch(`/api/pinterest?query=${encodeURIComponent(q)}`);
+        const data = await res.json();
+        box.textContent = JSON.stringify(data, null, 2);
+        box.scrollIntoView({ behavior: 'smooth' });
+      } catch (e) {
+        box.textContent = '❌ Gagal mengambil data.';
+      }
+    }
+  </script>
 </body>
 </html>
