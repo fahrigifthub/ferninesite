@@ -1,172 +1,143 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="id">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>API Tester - Ferninesite</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Ferninesite API Tester</title>
   <style>
-    * {
-      box-sizing: border-box;
-      font-family: 'Segoe UI', sans-serif;
-    }
     body {
+      font-family: Arial, sans-serif;
       background: #0f0f0f;
       color: #fff;
       margin: 0;
       padding: 20px;
     }
     h1 {
-      font-size: 1.6rem;
       text-align: center;
-    }
-    .container {
-      max-width: 600px;
-      margin: 0 auto;
-    }
-    .card {
-      background: #1c1c1c;
-      border-radius: 12px;
-      padding: 20px;
-      margin-bottom: 20px;
-      box-shadow: 0 0 15px rgba(0,255,255,0.1);
-    }
-    .card h2 {
-      font-size: 1.2rem;
       margin-bottom: 10px;
     }
-    input[type="text"] {
-      width: 100%;
-      padding: 12px;
-      border: none;
-      border-radius: 8px;
-      background: #2b2b2b;
-      color: #fff;
-      font-size: 1rem;
+    .api-box {
+      background: #1a1a1a;
+      border-radius: 12px;
+      margin-bottom: 20px;
+      padding: 16px;
+      box-shadow: 0 0 15px rgba(0, 255, 200, 0.15);
     }
-    button {
-      margin-top: 10px;
-      width: 100%;
-      padding: 12px;
-      border: none;
-      background: #00bcd4;
-      color: #fff;
-      font-size: 1rem;
-      border-radius: 8px;
+    .api-header {
       cursor: pointer;
+      font-weight: bold;
+      font-size: 18px;
+      margin-bottom: 8px;
     }
-    button:hover {
-      background: #0097a7;
+    .api-content {
+      display: none;
+      margin-top: 10px;
+    }
+    .api-content textarea, input {
+      width: 100%;
+      padding: 8px;
+      margin: 5px 0;
+      border-radius: 5px;
+      border: none;
+      font-family: monospace;
+    }
+    .btn {
+      background-color: #00ffd5;
+      color: #000;
+      padding: 10px 15px;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      margin-top: 5px;
     }
     pre {
-      margin-top: 10px;
-      background: #222;
-      padding: 15px;
-      border-radius: 8px;
-      white-space: pre-wrap;
-      word-break: break-word;
-      font-size: 0.9rem;
-      max-height: 400px;
-      overflow: auto;
-    }
-    ul {
-      padding-left: 20px;
-    }
-    .api-list {
-      margin-bottom: 30px;
-    }
-    .tag {
-      display: inline-block;
-      background: #00bcd4;
-      color: #000;
-      padding: 2px 8px;
+      background-color: #111;
+      color: #0f0;
+      padding: 10px;
+      overflow-x: auto;
       border-radius: 6px;
-      font-size: 0.8rem;
-      margin-right: 5px;
+      white-space: pre-wrap;
+    }
+    .error-box {
+      color: red;
+      white-space: pre-wrap;
     }
   </style>
 </head>
 <body>
-  <h1>📡 Ferninesite Public API</h1>
+  <h1>🌐 Ferninesite API Tester</h1>
 
-  <div class="container">
-    <div class="card api-list">
-      <h2>📜 List Endpoint</h2>
-      <strong>Search:</strong>
-      <ul>
-        <li><span class="tag">GET</span> <code>/api/pinterest?query=cat</code></li>
-      </ul>
-      <strong>Download:</strong>
-      <ul>
-        <li><span class="tag">GET</span> <code>/api/play?query=Akhir%20Tak%20Bahagia</code></li>
-      </ul>
+  <!-- /search/pinterest -->
+  <div class="api-box">
+    <div class="api-header" onclick="toggleContent('pinterest')">🔍 /search/pinterest</div>
+    <div id="pinterest" class="api-content">
+      <input type="text" id="queryPinterest" placeholder="Masukkan kata kunci...">
+      <button class="btn" onclick="fetchPinterest()">🔍 Try Pinterest</button>
+      <div id="resPinterest"></div>
     </div>
+  </div>
 
-    <div class="card">
-      <h2>🔍 Test /api/pinterest</h2>
-      <input type="text" id="queryPinterest" placeholder="Masukkan keyword pencarian (e.g. cat)"/>
-      <button onclick="fetchPinterest()">Try Pinterest</button>
-      <pre id="resPinterest">Response akan muncul di sini...</pre>
-    </div>
-
-    <div class="card">
-      <h2>🎵 Test /api/play</h2>
-      <input type="text" id="queryPlay" placeholder="Masukkan judul lagu (e.g. Akhir Tak Bahagia)"/>
-      <button onclick="fetchPlay()">Try Play</button>
-      <pre id="resPlay">Response akan muncul di sini...</pre>
+  <!-- /api/play -->
+  <div class="api-box">
+    <div class="api-header" onclick="toggleContent('play')">🎵 /api/play</div>
+    <div id="play" class="api-content">
+      <input type="text" id="queryPlay" placeholder="Masukkan nama lagu...">
+      <button class="btn" onclick="fetchPlay()">▶️ Try Play</button>
+      <div id="resPlay"></div>
     </div>
   </div>
 
   <script>
+    function toggleContent(id) {
+      const el = document.getElementById(id);
+      el.style.display = el.style.display === 'block' ? 'none' : 'block';
+    }
+
     async function fetchPinterest() {
       const q = document.getElementById('queryPinterest').value.trim();
       const box = document.getElementById('resPinterest');
-      if (!q) return box.textContent = '❌ Harap isi query.';
-      box.textContent = '⏳ Memuat...';
+      if (!q) {
+        return box.innerHTML = '<div class="error-box">❌ Harap isi kata kunci pencarian.</div>';
+      }
+      box.innerHTML = '⏳ Memuat hasil...';
       try {
         const res = await fetch(`/api/pinterest?query=${encodeURIComponent(q)}`);
+        if (!res.ok) {
+          const txt = await res.text();
+          return box.innerHTML = `<div class='error-box'>❌ Gagal!<br>Status: ${res.status}<br>${txt}</div>`;
+        }
         const json = await res.json();
-        box.textContent = JSON.stringify(json, null, 2);
+        if (!json.status) {
+          return box.innerHTML = `<div class='error-box'>❌ Gagal! ${json.message || 'Tidak diketahui'}</div>`;
+        }
+        box.innerHTML = `<pre>${JSON.stringify(json, null, 2)}</pre>`;
       } catch (e) {
-        box.textContent = '❌ Error mengambil data';
+        box.innerHTML = `<div class='error-box'>❌ Gagal mengambil data!<br>Error: ${e.message}</div>`;
       }
     }
 
-    
-  async function fetchPlay() {
-    const q = document.getElementById('queryPlay').value.trim();
-    const box = document.getElementById('resPlay');
-    if (!q) {
-      box.innerHTML = `<span style="color:red;">❌ Harap isi query pencarian lagu.</span>`;
-      return;
-    }
-
-    box.innerHTML = `⏳ Memuat hasil...`;
-
-    try {
-      const res = await fetch(`/api/play?query=${encodeURIComponent(q)}`);
-
-      if (!res.ok) {
-        const errText = await res.text();
-        box.innerHTML = `<span style="color:red;">❌ Gagal ambil data!<br>Status: ${res.status} ${res.statusText}<br>Detail: ${errText}</span>`;
-        return;
+    async function fetchPlay() {
+      const q = document.getElementById('queryPlay').value.trim();
+      const box = document.getElementById('resPlay');
+      if (!q) {
+        return box.innerHTML = '<div class="error-box">❌ Harap isi nama lagu.</div>';
       }
-
-      const json = await res.json();
-
-      if (!json.status) {
-        box.innerHTML = `<span style="color:red;">❌ Error dari server:<br>${json.message || 'Tidak diketahui'}</span>`;
-        return;
+      box.innerHTML = '⏳ Memuat hasil...';
+      try {
+        const res = await fetch(`/api/play?query=${encodeURIComponent(q)}`);
+        if (!res.ok) {
+          const txt = await res.text();
+          return box.innerHTML = `<div class='error-box'>❌ Gagal!<br>Status: ${res.status}<br>${txt}</div>`;
+        }
+        const json = await res.json();
+        if (!json.status && json.message) {
+          return box.innerHTML = `<div class='error-box'>❌ Error: ${json.message}</div>`;
+        }
+        box.innerHTML = `<pre>${JSON.stringify(json, null, 2)}</pre>`;
+      } catch (e) {
+        box.innerHTML = `<div class='error-box'>❌ Gagal mengambil data!<br>Error: ${e.message}</div>`;
       }
-
-      box.innerHTML = `<pre>${JSON.stringify(json, null, 2)}</pre>`;
-
-    } catch (err) {
-      box.innerHTML = `<span style="color:red;">❌ Gagal mengambil data!<br>Error: ${err.message}</span>`;
     }
-  }
-
-
-
   </script>
 </body>
 </html>
