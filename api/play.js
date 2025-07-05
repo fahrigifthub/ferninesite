@@ -1,25 +1,63 @@
-export default async function handler(req, res) {
-  const { query } = req;
-  const name = query.name;
+import axios from 'axios';
+import cheerio from 'cheerio';
 
-  if (!name) {
-    return res.status(400).json({ status: false, message: "Query parameter 'name' is required." });
+export default async function handler(req, res) {
+  const { query } = req.query;
+  if (!query) {
+    return res.status(400).json({ status: false, message: "Query parameter 'query' is required." });
   }
 
   try {
-    const fetchRes = await fetch(
-      `https://api.fasturl.link/downup/ytdown-v1?name=${encodeURIComponent(name)}&format=mp3&quality=320&server=auto`,
-      {
-        headers: {
-          accept: "application/json",
-        },
-      }
-    );
+    const ytSearchUrl = `https://www.youtube.com/results?search_query=${encodeURIComponent(query)}`;
+    const ytRes = await axios.get(ytSearchUrl);
+    const videoId = ytRes.data.match(/"videoId":"(.*?)"/)?.[1];
+    if (!videoId) {
+      return res.status(404).json({ status: false, message: "Video tidak ditemukan." });
+    }
 
-    const data = await fetchRes.json();
-    res.status(200).json(data);
-  } catch (err) {
-    console.error(err);
-    res.status(500).json({ status: false, message: "Internal server error." });
+    const videoLink = `https://youtube.com/watch?v=${videoId}`;
+
+    const y2kidRes = await axios.post('https://y2kid.yogik.id/yt', `url=${encodeURIComponent(videoLink)}`, {
+      headers: { 'Content-Type': 'application/x-www-form-urlencoded' }
+    });
+
+    const $ = cheerio.load(y2kidRes.data);
+    const title = $('h3').first().text().trim();
+    const thumb = $('img').attr('src');
+    const downloadLink = $('a[href$=".mp3"]').attr('href');
+
+    if (!downloadLink) {
+      return res.status(500).json({ status: false, message: "Gagal mendapatkan link MP3." });
+    }
+
+    const result = {
+      msg: "Download link retrieved successfully!",
+      title,
+      metadata: {
+        id: videoId,
+        duration: "unknown",
+        thumbnail: thumb,
+        views: "unknown",
+        description: "-",
+        lengthSeconds: "-",
+        uploadDate: "-"
+      },
+      author: {
+        name: "-",
+        url: "-",
+        bio: "No bio available",
+        image: "-",
+        subCount: 0
+      },
+      url: videoLink,
+      format: "mp3",
+      quality: "320",
+      media: downloadLink
+    };
+
+    return res.status(200).json({ status: 200, content: "Success", result, creator: "ferninesite" });
+  } catch (error) {
+    console.error(error);
+    return res.status(500).json({ status: false, message: "Terjadi kesalahan server." });
   }
-}  
+}
