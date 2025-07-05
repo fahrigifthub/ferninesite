@@ -132,18 +132,19 @@
     }
 
     async function fetchPlay() {
-      const q = document.getElementById('queryPlay').value.trim();
-      const box = document.getElementById('resPlay');
-      if (!q) return box.textContent = '❌ Harap isi query.';
-      box.textContent = '⏳ Memuat...';
-      try {
-        const res = await fetch(`/api/play?name=${encodeURIComponent(q)}`);
-        const json = await res.json();
-        box.textContent = JSON.stringify(json, null, 2);
-      } catch (e) {
-        box.textContent = '❌ Error mengambil data';
-      }
-    }
+  const q = document.getElementById('queryPlay').value.trim();
+  const box = document.getElementById('resPlay');
+  if (!q) return box.textContent = '❌ Harap isi query.';
+  box.textContent = '⏳ Memuat...';
+  try {
+    const res = await fetch(`/api/play?name=${encodeURIComponent(q)}`);
+    const json = await res.json();
+    box.textContent = JSON.stringify(json, null, 2);
+  } catch (e) {
+    box.textContent = '❌ Error mengambil data';
+  }
+}
+
   </script>
 </body>
 </html>
