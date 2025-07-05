@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Pinterest API Tester</title>
+  <title>API Tester - Ferninesite</title>
   <style>
     * {
       box-sizing: border-box;
@@ -16,22 +16,23 @@
       padding: 20px;
     }
     h1 {
-      font-size: 1.8rem;
+      font-size: 1.6rem;
       text-align: center;
-      margin-bottom: 10px;
     }
     .container {
-      max-width: 500px;
+      max-width: 600px;
       margin: 0 auto;
-      background: #1a1a1a;
+    }
+    .card {
+      background: #1c1c1c;
       border-radius: 12px;
       padding: 20px;
-      box-shadow: 0 0 20px rgba(0,255,255,0.1);
+      margin-bottom: 20px;
+      box-shadow: 0 0 15px rgba(0,255,255,0.1);
     }
-    label {
-      font-size: 1rem;
-      margin-bottom: 5px;
-      display: block;
+    .card h2 {
+      font-size: 1.2rem;
+      margin-bottom: 10px;
     }
     input[type="text"] {
       width: 100%;
@@ -43,7 +44,7 @@
       font-size: 1rem;
     }
     button {
-      margin-top: 15px;
+      margin-top: 10px;
       width: 100%;
       padding: 12px;
       border: none;
@@ -52,13 +53,12 @@
       font-size: 1rem;
       border-radius: 8px;
       cursor: pointer;
-      transition: background 0.3s ease;
     }
     button:hover {
       background: #0097a7;
     }
     pre {
-      margin-top: 20px;
+      margin-top: 10px;
       background: #222;
       padding: 15px;
       border-radius: 8px;
@@ -68,38 +68,80 @@
       max-height: 400px;
       overflow: auto;
     }
+    ul {
+      padding-left: 20px;
+    }
+    .api-list {
+      margin-bottom: 30px;
+    }
+    .tag {
+      display: inline-block;
+      background: #00bcd4;
+      color: #000;
+      padding: 2px 8px;
+      border-radius: 6px;
+      font-size: 0.8rem;
+      margin-right: 5px;
+    }
   </style>
 </head>
 <body>
-  <h1>🔎 Pinterest API Tester</h1>
+  <h1>📡 Ferninesite Public API</h1>
+
   <div class="container">
-    <label for="query">Query Parameter:</label>
-    <input type="text" id="query" placeholder="e.g. cat, anime, nature" />
+    <div class="card api-list">
+      <h2>📜 List Endpoint</h2>
+      <strong>Search:</strong>
+      <ul>
+        <li><span class="tag">GET</span> <code>/api/pinterest?query=cat</code></li>
+      </ul>
+      <strong>Download:</strong>
+      <ul>
+        <li><span class="tag">GET</span> <code>/api/play?query=Akhir%20Tak%20Bahagia</code></li>
+      </ul>
+    </div>
 
-    <button onclick="fetchData()">Try</button>
+    <div class="card">
+      <h2>🔍 Test /api/pinterest</h2>
+      <input type="text" id="queryPinterest" placeholder="Masukkan keyword pencarian (e.g. cat)"/>
+      <button onclick="fetchPinterest()">Try Pinterest</button>
+      <pre id="resPinterest">Response akan muncul di sini...</pre>
+    </div>
 
-    <pre id="responseBox">Response JSON akan tampil di sini...</pre>
+    <div class="card">
+      <h2>🎵 Test /api/play</h2>
+      <input type="text" id="queryPlay" placeholder="Masukkan judul lagu (e.g. Akhir Tak Bahagia)"/>
+      <button onclick="fetchPlay()">Try Play</button>
+      <pre id="resPlay">Response akan muncul di sini...</pre>
+    </div>
   </div>
 
   <script>
-    async function fetchData() {
-      const q = document.getElementById('query').value.trim();
-      const box = document.getElementById('responseBox');
-
-      if (!q) {
-        box.textContent = '❌ Harap isi query terlebih dahulu.';
-        return;
-      }
-
-      box.textContent = '⏳ Memuat data...';
-
+    async function fetchPinterest() {
+      const q = document.getElementById('queryPinterest').value.trim();
+      const box = document.getElementById('resPinterest');
+      if (!q) return box.textContent = '❌ Harap isi query.';
+      box.textContent = '⏳ Memuat...';
       try {
         const res = await fetch(`/api/pinterest?query=${encodeURIComponent(q)}`);
-        const data = await res.json();
-        box.textContent = JSON.stringify(data, null, 2);
-        box.scrollIntoView({ behavior: 'smooth' });
+        const json = await res.json();
+        box.textContent = JSON.stringify(json, null, 2);
       } catch (e) {
-        box.textContent = '❌ Gagal mengambil data.';
+        box.textContent = '❌ Error mengambil data';
+      }
+    }
+
+    async function fetchPlay() {
+      const q = document.getElementById('queryPlay').value.trim();
+      const box = document.getElementById('resPlay');
+      if (!q) return box.textContent = '❌ Harap isi query.';
+      box.textContent = '⏳ Memuat...';
+      try {
+        const res = await fetch(`/api/play?query=${encodeURIComponent(q)}`);
+        const json = await res.json();
+        box.textContent = JSON.stringify(json, null, 2);
+      } catch (e) {
+        box.textContent = '❌ Error mengambil data';
       }
     }
   </script>
