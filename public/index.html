@@ -130,29 +130,48 @@ async function fetchPlay() {
   try {
     const res = await fetch(`/api/play?query=${encodeURIComponent(q)}`);
     const json = await res.json();
-    if (json.status !== 200) {
+    if (json.status !== 200 || !json.result?.media) {
       box.textContent = `❌ Gagal!\nStatus: ${json.status || res.status}\n${json.message || 'Terjadi kesalahan'}`;
       return;
     }
+
     box.textContent = JSON.stringify(json, null, 2);
+
+    const audioUrl = json.result.media;
+    const safeTitle = json.result.title?.replace(/[^\w\s]/gi, '') || 'audio';
 
     const audioHTML = `
       <h4>🎧 Preview Audio</h4>
-      <audio controls preload="none" crossorigin="anonymous">
-        <source src="${json.result.media}" type="audio/mpeg">
+      <audio id="audioPreview" controls preload="none" crossorigin="anonymous">
+        <source src="${audioUrl}" type="audio/mpeg">
         Browser tidak mendukung audio tag.
       </audio>
+      <div id="audioStatus" style="margin-top:5px;color:#f87171;"></div>
       <br/>
-      <a href="${json.result.media}" download="${json.result.title.replace(/[^\w\s]/gi, '')}.mp3" class="btn-download">
+      <a href="${audioUrl}" target="_blank" class="btn-download">
         ⬇️ Download MP3
       </a>
     `;
+
     media.innerHTML = audioHTML;
+
+    const audio = document.getElementById('audioPreview');
+    const status = document.getElementById('audioStatus');
+
+    audio.addEventListener('error', () => {
+      status.innerText = '❌ Gagal memuat audio (CORS atau URL tidak valid)';
+    });
+
+    audio.addEventListener('loadeddata', () => {
+      status.innerText = '';
+    });
+
   } catch (e) {
     box.textContent = `❌ Error: ${e.message}`;
     media.innerHTML = '';
   }
 }
+
 
 async function fetchPinterest() {
   const q = document.getElementById('queryPinterest').value.trim();
