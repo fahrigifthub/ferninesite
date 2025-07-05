@@ -94,8 +94,9 @@
       <input type="text" id="queryPlay" placeholder="Masukkan judul lagu...">
       <button onclick="fetchPlay()">▶️ Try Play</button>
     </div>
-    <pre id="resPlay">Hasil akan muncul di sini...</pre>
-    <div id="playResult"></div>
+    <pre id="resPlay" class="response-box"></pre>
+<div id="audioBox" style="margin-top:10px"></div>
+
   </div>
 </div>
 
@@ -120,57 +121,36 @@ function toggleContent(id) {
 async function fetchPlay() {
   const q = document.getElementById('queryPlay').value.trim();
   const box = document.getElementById('resPlay');
-  const media = document.getElementById('playResult');
-  box.textContent = '';
-  media.innerHTML = '';
+  const audioBox = document.getElementById('audioBox');
+  if (!q) return box.textContent = '❌ Harap isi query.';
 
-  if (!q) return box.textContent = '❌ Harap isi judul lagu.';
-  box.textContent = '⏳ Mengambil data...';
+  box.textContent = '⏳ Memuat...';
+  audioBox.innerHTML = '';
 
   try {
     const res = await fetch(`/api/play?query=${encodeURIComponent(q)}`);
     const json = await res.json();
-    if (json.status !== 200 || !json.result?.media) {
-      box.textContent = `❌ Gagal!\nStatus: ${json.status || res.status}\n${json.message || 'Terjadi kesalahan'}`;
+
+    if (!json.status || !json.result || !json.result.media) {
+      box.textContent = `❌ Gagal!\nStatus: ${res.status}\n${json.message || 'Tidak ada hasil.'}`;
       return;
     }
 
     box.textContent = JSON.stringify(json, null, 2);
 
-    const audioUrl = json.result.media;
-    const safeTitle = json.result.title?.replace(/[^\w\s]/gi, '') || 'audio';
-
-    const audioHTML = `
-      <h4>🎧 Preview Audio</h4>
-      <audio id="audioPreview" controls preload="none" crossorigin="anonymous">
+    const audioUrl = `/api/proxy-audio?url=${encodeURIComponent(json.result.media)}`;
+    audioBox.innerHTML = `
+      <audio controls style="width: 100%; border-radius: 8px; margin-top: 8px;">
         <source src="${audioUrl}" type="audio/mpeg">
-        Browser tidak mendukung audio tag.
+        Browser kamu tidak support audio.
       </audio>
-      <div id="audioStatus" style="margin-top:5px;color:#f87171;"></div>
-      <br/>
-      <a href="${audioUrl}" target="_blank" class="btn-download">
-        ⬇️ Download MP3
-      </a>
+      <a href="${audioUrl}" download class="btn-download" style="display:block;margin-top:8px;text-align:center;background:#333;padding:10px;border-radius:6px;color:white;text-decoration:none">⬇️ Download MP3</a>
     `;
-
-    media.innerHTML = audioHTML;
-
-    const audio = document.getElementById('audioPreview');
-    const status = document.getElementById('audioStatus');
-
-    audio.addEventListener('error', () => {
-      status.innerText = '❌ Gagal memuat audio (CORS atau URL tidak valid)';
-    });
-
-    audio.addEventListener('loadeddata', () => {
-      status.innerText = '';
-    });
-
   } catch (e) {
-    box.textContent = `❌ Error: ${e.message}`;
-    media.innerHTML = '';
+    box.textContent = `❌ Error mengambil data\n${e.message}`;
   }
 }
+
 
 
 async function fetchPinterest() {
