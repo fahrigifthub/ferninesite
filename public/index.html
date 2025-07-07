@@ -45,6 +45,21 @@
       "priceCurrency": "USD"
     }
   }
+    setInterval(() => {
+    const now = new Date();
+    const jam = now.toLocaleTimeString('id-ID', { hour12: false });
+    document.getElementById('clock').textContent = jam;
+  }, 1000);
+
+  // IP publik via API
+  fetch('https://api.ipify.org?format=json')
+    .then(res => res.json())
+    .then(data => {
+      document.getElementById('ip-address').textContent = data.ip;
+    })
+    .catch(() => {
+      document.getElementById('ip-address').textContent = "Gagal memuat IP";
+    });
   </script>
 
   <!-- Styles -->
@@ -105,6 +120,14 @@
     <h2>📌 Tentang Fernine API</h2>
     <p>Fernine API adalah platform publik REST API gratis dan cepat dengan desain futuristik Matrix-style. Cocok untuk developer yang butuh akses cepat dan stabil.</p>
   </div>
+
+  <div class="box">
+  <h2>📊 Statistik User</h2>
+  <p>🕒 Jam: <span id="clock">00:00:00</span></p>
+  <p>📡 IP Anda: <span id="ip-address">Memuat...</span></p>
+  <p>📈 Total Request: <span id="total-req">1234</span></p> <!-- dummy -->
+</div>
+
 
   <div class="box">
     <h2>📞 Kontak</h2>
