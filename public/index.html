@@ -4,128 +4,135 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>🌐 Ferninesite API</title>
-        <style>
-  body {
-    font-family: 'Courier New', monospace;
-    margin: 0;
-    padding: 1rem;
-    background: #000;
-    color: #00ff00;
-    background-image: linear-gradient(to bottom, #000000 0%, #0d0d0d 100%);
-  }
+  <style>
+    body {
+      font-family: 'Courier New', monospace;
+      margin: 0;
+      padding: 1rem;
+      background: #000;
+      color: #00ff00;
+      background-image: linear-gradient(to bottom, #000000 0%, #0d0d0d 100%);
+    }
 
-  h1 {
-    text-align: center;
-    margin-bottom: 1.5rem;
-    font-size: 2rem;
-    color: #00ff00;
-    text-shadow: 0 0 10px #00ff00, 0 0 20px #00ff00;
-  }
+    h1 {
+      text-align: center;
+      margin-bottom: 1.5rem;
+      font-size: 2rem;
+      color: #00ff00;
+      text-shadow: 0 0 10px #00ff00, 0 0 20px #00ff00;
+    }
 
-  .endpoint-box {
-    background: rgba(0, 255, 0, 0.05);
-    padding: 1rem;
-    border-radius: 10px;
-    margin-bottom: 1.2rem;
-    border: 1px solid #00ff00;
-    box-shadow: 0 0 15px rgba(0, 255, 0, 0.2);
-    transition: 0.3s ease;
-  }
+    .endpoint-box {
+      background: rgba(0, 255, 0, 0.05);
+      padding: 1rem;
+      border-radius: 10px;
+      margin-bottom: 1.2rem;
+      border: 1px solid #00ff00;
+      box-shadow: 0 0 15px rgba(0, 255, 0, 0.2);
+      transition: 0.3s ease;
+    }
 
-  .endpoint-box:hover {
-    box-shadow: 0 0 25px rgba(0, 255, 0, 0.5);
-  }
+    .endpoint-box:hover {
+      box-shadow: 0 0 25px rgba(0, 255, 0, 0.5);
+    }
 
-  .endpoint-box h3 {
-    margin: 0;
-    cursor: pointer;
-    font-size: 1.2rem;
-    color: #00ffcc;
-    text-shadow: 0 0 10px #00ffcc;
-  }
+    .endpoint-box h3 {
+      margin: 0;
+      cursor: pointer;
+      font-size: 1.2rem;
+      color: #00ffcc;
+      text-shadow: 0 0 10px #00ffcc;
+    }
 
-  .content {
-    display: none;
-    margin-top: 0.8rem;
-    color: #00ff00;
-  }
+    .content {
+      display: none;
+      margin-top: 0.8rem;
+      color: #00ff00;
+    }
 
-  .input-row {
-    display: flex;
-    flex-direction: column;
-    gap: 0.5rem;
-    margin-bottom: 0.8rem;
-  }
+    .input-row {
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+      margin-bottom: 0.8rem;
+    }
 
-  input[type="text"] {
-    padding: 0.6rem;
-    border-radius: 6px;
-    border: 1px solid #00ff00;
-    background: black;
-    color: #00ff00;
-    outline: none;
-    box-shadow: 0 0 8px #00ff00;
-  }
+    input[type="text"] {
+      padding: 0.6rem;
+      border-radius: 6px;
+      border: 1px solid #00ff00;
+      background: black;
+      color: #00ff00;
+      outline: none;
+      box-shadow: 0 0 8px #00ff00;
+    }
 
-  input[type="text"]::placeholder {
-    color: #00ff88;
-    opacity: 0.7;
-  }
+    input[type="text"]::placeholder {
+      color: #00ff88;
+      opacity: 0.7;
+    }
 
-  button {
-    padding: 0.6rem 1rem;
-    border: none;
-    border-radius: 6px;
-    background: linear-gradient(90deg, #00ff00, #00cc66);
-    color: black;
-    font-weight: bold;
-    cursor: pointer;
-    box-shadow: 0 0 10px #00ff00;
-    transition: 0.2s ease-in-out;
-  }
+    button {
+      padding: 0.6rem 1rem;
+      border: none;
+      border-radius: 6px;
+      background: linear-gradient(90deg, #00ff00, #00cc66);
+      color: black;
+      font-weight: bold;
+      cursor: pointer;
+      box-shadow: 0 0 10px #00ff00;
+      transition: 0.2s ease-in-out;
+    }
 
-  button:hover {
-    background: linear-gradient(90deg, #00ff88, #00ffaa);
-  }
+    button:hover {
+      background: linear-gradient(90deg, #00ff88, #00ffaa);
+    }
 
-  pre {
-    background: #001100;
-    padding: 1rem;
-    overflow-x: auto;
-    border-radius: 10px;
-    font-size: 0.9rem;
-    color: #00ff00;
-    border: 1px solid #00ff00;
-    box-shadow: 0 0 10px #00ff00;
-  }
+    pre {
+      background: #001100;
+      padding: 1rem;
+      overflow-x: auto;
+      border-radius: 10px;
+      font-size: 0.9rem;
+      color: #00ff00;
+      border: 1px solid #00ff00;
+      box-shadow: 0 0 10px #00ff00;
+    }
 
-  .btn-download {
-    display: inline-block;
-    margin-top: 0.5rem;
-    padding: 0.6rem 1rem;
-    background: #002200;
-    color: #00ff00;
-    border-radius: 6px;
-    text-decoration: none;
-    font-weight: bold;
-    border: 1px solid #00ff00;
-    box-shadow: 0 0 10px #00ff00;
-    text-align: center;
-  }
+    .btn-download {
+      display: inline-block;
+      margin-top: 0.5rem;
+      padding: 0.6rem 1rem;
+      background: #002200;
+      color: #00ff00;
+      border-radius: 6px;
+      text-decoration: none;
+      font-weight: bold;
+      border: 1px solid #00ff00;
+      box-shadow: 0 0 10px #00ff00;
+      text-align: center;
+    }
 
-  .btn-download:hover {
-    background: #004400;
-  }
+    .btn-download:hover {
+      background: #004400;
+    }
 
-  audio {
-    width: 100%;
-    margin-top: 1rem;
-    filter: drop-shadow(0 0 10px #00ff00);
-  }
-</style>
+    audio {
+      width: 100%;
+      margin-top: 1rem;
+      filter: drop-shadow(0 0 10px #00ff00);
+    }
 
+    a:hover {
+      text-shadow: 0 0 10px #00ffcc;
+    }
+  </style>
 </head>
 <body>
+
+<audio autoplay loop hidden>
+  <source src="https://files.catbox.moe/q4bmns.mp3" type="audio/mpeg">
+</audio>
 
 <h1>🌐 Ferninesite API</h1>
 
@@ -138,8 +145,7 @@
       <button onclick="fetchPlay()">▶️ Try Play</button>
     </div>
     <pre id="resPlay" class="response-box"></pre>
-<div id="audioBox" style="margin-top:10px"></div>
-
+    <div id="audioBox" style="margin-top:10px"></div>
   </div>
 </div>
 
@@ -153,6 +159,36 @@
     </div>
     <pre id="resPinterest">Hasil akan muncul di sini...</pre>
   </div>
+</div>
+
+<!-- ℹ️ Informasi Footer -->
+<hr style="margin: 3rem 0; border: 1px solid #00ff00;">
+
+<div style="text-align: center; font-family: 'Courier New', monospace; color: #00ff00;">
+  <h2 style="text-shadow: 0 0 8px #00ff00;">📡 Tentang Ferninesite API</h2>
+  <p style="max-width: 600px; margin: 0 auto;">
+    Ferninesite API adalah platform API publik yang menyediakan berbagai endpoint praktis seperti play musik, pencarian gambar, dan fitur lainnya.
+    Dikembangkan dengan semangat open-source dan eksplorasi teknologi masa depan.
+  </p>
+
+  <br/>
+
+  <h3 style="text-shadow: 0 0 6px #00ff00;">📬 Kontak</h3>
+  <p>
+    Telegram: <a href="https://t.me/FernineSupport" target="_blank" style="color:#00ffcc;text-decoration: none;">@FernineSupport</a><br/>
+    WhatsApp: <a href="https://wa.me/6281234567890" target="_blank" style="color:#00ffcc;text-decoration: none;">+62 812-3456-7890</a>
+  </p>
+
+  <br/>
+
+  <p style="opacity: 0.8;">
+    🕒 Since 2024<br/>
+    🔧 Maintained by <strong style="color:#00ffaa;">FahriGG Dev</strong>
+  </p>
+
+  <p style="margin-top: 1rem; font-size: 0.9rem; opacity: 0.7;">
+    © 2025 Ferninesite API - All rights reserved.
+  </p>
 </div>
 
 <script>
@@ -183,18 +219,16 @@ async function fetchPlay() {
 
     const audioUrl = `/api/proxy-audio?url=${encodeURIComponent(json.result.media)}`;
     audioBox.innerHTML = `
-      <audio controls style="width: 100%; border-radius: 8px; margin-top: 8px;">
+      <audio controls>
         <source src="${audioUrl}" type="audio/mpeg">
         Browser kamu tidak support audio.
       </audio>
-      <a href="${audioUrl}" download class="btn-download" style="display:block;margin-top:8px;text-align:center;background:#333;padding:10px;border-radius:6px;color:white;text-decoration:none">⬇️ Download MP3</a>
+      <a href="${audioUrl}" download class="btn-download">⬇️ Download MP3</a>
     `;
   } catch (e) {
     box.textContent = `❌ Error mengambil data\n${e.message}`;
   }
 }
-
-
 
 async function fetchPinterest() {
   const q = document.getElementById('queryPinterest').value.trim();
@@ -216,9 +250,6 @@ async function fetchPinterest() {
   }
 }
 </script>
-<audio autoplay loop hidden>
-  <source src="https://files.catbox.moe/32zw3r.mp3" type="audio/mpeg">
-</audio>
-  
+
 </body>
 </html>
