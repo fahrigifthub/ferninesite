@@ -1,69 +1,62 @@
 import { IncomingForm } from 'formidable';
-import { readFile } from 'fs/promises';
-import FormData from 'form-data';
 import { fileTypeFromBuffer } from 'file-type';
-import fetch from 'node-fetch';
+import fs from 'fs';
 
 export const config = {
   api: {
-    bodyParser: false,
+    bodyParser: false, // ini penting!
   },
 };
 
 export default async function handler(req, res) {
-  if (req.method !== "POST") {
-    return res.status(405).json({ error: "Method Not Allowed" });
+  if (req.method !== 'POST') {
+    return res.status(405).json({ error: 'Method not allowed' });
   }
 
-  try {
-    const form = new IncomingForm({ maxFileSize: 10 * 1024 * 1024 }); // 10MB
+  const form = new IncomingForm({ multiples: false });
 
-    const files = await new Promise((resolve, reject) => {
-      form.parse(req, (err, fields, files) => {
-        if (err) reject(err);
-        else resolve(files);
-      });
-    });
+  form.parse(req, async (err, fields, files) => {
+    if (err) return res.status(500).json({ error: 'Upload failed', details: err.message });
 
-    const file = files.fileToUpload;
-    if (!file || !file[0] || !file[0].filepath) {
-      throw new Error("No valid file uploaded.");
+    const file = files.file;
+    if (!file) {
+      return res.status(400).json({ error: 'Upload failed', details: 'No valid file uploaded.' });
     }
 
-    const buffer = await readFile(file[0].filepath);
+    const buffer = fs.readFileSync(file.filepath);
     const { ext, mime } = (await fileTypeFromBuffer(buffer)) || {
       ext: 'bin',
       mime: 'application/octet-stream',
     };
 
+    const FormData = (await import('form-data')).default;
+    const fetch = (await import('node-fetch')).default;
+
     const formData = new FormData();
-    formData.append("reqtype", "fileupload");
-    formData.append("fileToUpload", buffer, {
+    formData.append('reqtype', 'fileupload');
+    formData.append('fileToUpload', buffer, {
       filename: `file.${ext}`,
       contentType: mime,
     });
 
-    const uploadRes = await fetch("https://catbox.moe/user/api.php", {
-      method: "POST",
-      body: formData,
-    });
+    try {
+      const response = await fetch('https://catbox.moe/user/api.php', {
+        method: 'POST',
+        body: formData,
+        headers: formData.getHeaders(),
+      });
 
-    if (!uploadRes.ok) {
-      const errText = await uploadRes.text();
-      throw new Error("Catbox Upload Failed: " + errText);
+      const text = await response.text();
+      if (!text.startsWith('https://')) {
+        return res.status(500).json({ error: 'Upload failed', details: text });
+      }
+
+      return res.json({
+        url: text,
+        creator: 'ferninesite',
+      });
+    } catch (err) {
+      return res.status(500).json({ error: 'Upload failed', details: err.message });
     }
-
-    const url = await uploadRes.text();
-
-    return res.status(200).json({
-      url,
-      creator: "ferninesite",
-    });
-
-  } catch (e) {
-    return res.status(500).json({
-      error: "Upload failed",
-      details: e.message || String(e),
-    });
-  }
+  });
 }
