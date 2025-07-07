@@ -1,3 +1,5 @@
+import { incrementHit, getTotalHit } from '@/utils/hitCounter';
+incrementHit(); // Hit bertambah setiap request berhasil masuk// atau relative jika error
 export default async function handler(req, res) {
   const { query } = req.query;
 
