@@ -85,10 +85,12 @@
   }
 
   const file = fileInput.files[0];
+  const formData = new FormData();
+  formData.append('file', file);
 
   fetch('/api/tourl', {
     method: 'POST',
-    body: file
+    body: formData
   })
     .then(res => res.json())
     .then(data => {
@@ -102,6 +104,7 @@
       resultBox.textContent = `❌ Error: ${err.message}`;
     });
 }
+
 
 function clearTourl() {
   document.getElementById('fileTourl').value = '';
@@ -151,7 +154,7 @@ function clearTourl() {
   </div>
 
   <!-- 🖼 /api/tourl -->
-<div class="endpoint-box">
+<div class="box">
   <h3 onclick="toggleContent('tourl')">🖼 /api/tourl</h3>
   <div class="content" id="content-tourl">
     <div class="input-row">
