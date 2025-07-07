@@ -66,16 +66,15 @@
       document.getElementById('ip-address').textContent = "Gagal memuat IP";
     });
 
-  // Total Request
-  fetch('/api/hits')
-    .then(res => res.json())
-    .then(data => {
-      document.getElementById('total-req').textContent = data.total;
-    })
-    .catch(() => {
-      document.getElementById('total-req').textContent = "Error";
-    });
-</script>
+fetch('/api/hits')
+  .then(res => res.json())
+  .then(data => {
+    document.getElementById('total-req').textContent = data.total;
+  })
+  .catch(() => {
+    document.getElementById('total-req').textContent = "Error";
+  });
+
 
 
   <!-- Styles -->
