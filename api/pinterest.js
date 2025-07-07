@@ -1,5 +1,5 @@
 import { incrementHit, getTotalHit } from '@/utils/hitCounter';
-incrementHit(); // Hit bertambah setiap request berhasil masuk// atau relative jika error
+// Hit bertambah setiap request berhasil masuk// atau relative jika error
 export default async function handler(req, res) {
   const { query } = req.query;
 
@@ -9,7 +9,7 @@ export default async function handler(req, res) {
       message: "Query parameter 'query' is required.",
     });
   }
-
+incrementHit(); 
   try {
     const response = await fetch(`https://api.siputzx.my.id/api/s/pinterest?query=${encodeURIComponent(query)}`);
     const data = await response.json();
