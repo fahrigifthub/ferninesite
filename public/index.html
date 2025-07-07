@@ -24,28 +24,33 @@
   <meta name="twitter:description" content="REST API Gratis, Tampilan Matrix-style, Akses Cepat dan Mudah.">
   <meta name="twitter:image" content="https://yourdomain.com/images/twitter-card.png">
 
-  <!-- JSON-LD Structured Data -->
-  <script type="application/ld+json">
-  {
-    "@context": "https://schema.org",
-    "@type": "WebAPI",
-    "name": "Fernine API",
-    "description": "REST API Gratis dan Cepat dengan Tampilan Matrix-style",
-    "url": "https://ferninesite.vercel.app",
-    "provider": {
-      "@type": "Organization",
-      "name": "Fernine",
-      "url": "https://ferninesite.vercel.app"
-    },
-    "applicationCategory": "DeveloperApplication",
-    "operatingSystem": "All",
-    "offers": {
-      "@type": "Offer",
-      "price": "0",
-      "priceCurrency": "USD"
-    }
+  <!-- ✅ JSON-LD Structured Data -->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "WebAPI",
+  "name": "Fernine API",
+  "description": "REST API Gratis dan Cepat dengan Tampilan Matrix-style",
+  "url": "https://ferninesite.vercel.app",
+  "provider": {
+    "@type": "Organization",
+    "name": "Fernine",
+    "url": "https://ferninesite.vercel.app"
+  },
+  "applicationCategory": "DeveloperApplication",
+  "operatingSystem": "All",
+  "offers": {
+    "@type": "Offer",
+    "price": "0",
+    "priceCurrency": "USD"
   }
-    setInterval(() => {
+}
+</script>
+
+<!-- ✅ JS untuk Jam, IP, dan Hit -->
+<script>
+  // Jam real-time
+  setInterval(() => {
     const now = new Date();
     const jam = now.toLocaleTimeString('id-ID', { hour12: false });
     document.getElementById('clock').textContent = jam;
@@ -61,6 +66,7 @@
       document.getElementById('ip-address').textContent = "Gagal memuat IP";
     });
 
+  // Total Request
   fetch('/api/hits')
     .then(res => res.json())
     .then(data => {
@@ -69,8 +75,8 @@
     .catch(() => {
       document.getElementById('total-req').textContent = "Error";
     });
+</script>
 
-  </script>
 
   <!-- Styles -->
   <style>
