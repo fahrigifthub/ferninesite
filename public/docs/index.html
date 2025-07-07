@@ -76,26 +76,38 @@
     }
   </style>
   <script>
-    function fetchToUrl() {
-    const fileInput = document.getElementById("fileToUpload");
-    const file = fileInput.files[0];
-    if (!file) return alert("Pilih file dulu!");
+    function uploadTourl() {
+  const fileInput = document.getElementById('fileTourl');
+  const resultBox = document.getElementById('resTourl');
 
-    const formData = new FormData();
-    formData.append("file", file);
-
-    fetch("/api/tourl", {
-      method: "POST",
-      body: formData,
-    })
-      .then(res => res.json())
-      .then(data => {
-        document.getElementById("resTourl").textContent = JSON.stringify(data, null, 2);
-      })
-      .catch(err => {
-        document.getElementById("resTourl").textContent = "❌ Error: " + err.message;
-      });
+  if (!fileInput.files.length) {
+    return alert('📂 Pilih file dulu sebelum upload.');
   }
+
+  const file = fileInput.files[0];
+
+  fetch('/api/tourl', {
+    method: 'POST',
+    body: file
+  })
+    .then(res => res.json())
+    .then(data => {
+      if (data.status) {
+        resultBox.textContent = `✅ URL: ${data.url}\n🗂 Filename: ${data.filename}\n📦 Size: ${data.size} bytes`;
+      } else {
+        resultBox.textContent = `❌ Gagal: ${data.message || 'Unknown error.'}`;
+      }
+    })
+    .catch(err => {
+      resultBox.textContent = `❌ Error: ${err.message}`;
+    });
+}
+
+function clearTourl() {
+  document.getElementById('fileTourl').value = '';
+  document.getElementById('resTourl').textContent = 'Hasil URL akan muncul di sini...';
+}
+
     function toggleContent(id) {
       const el = document.getElementById('content-' + id);
       el.style.display = (el.style.display === 'none' || !el.style.display) ? 'block' : 'none';
@@ -138,16 +150,19 @@
     </div>
   </div>
 
-  <div class="endpoint-box">
-  <h3 onclick="toggleContent('tourl')">📤 /api/tourl</h3>
+  <!-- 🖼 /api/tourl -->
+<div class="endpoint-box">
+  <h3 onclick="toggleContent('tourl')">🖼 /api/tourl</h3>
   <div class="content" id="content-tourl">
     <div class="input-row">
-      <input type="file" id="fileToUpload" accept="image/*,video/*">
-      <button onclick="fetchToUrl()">🌐 Upload to URL</button>
+      <input type="file" id="fileTourl">
+      <button onclick="uploadTourl()">☁️ Upload</button>
+      <button onclick="clearTourl()">🧹 Clear</button>
     </div>
     <pre id="resTourl">Hasil URL akan muncul di sini...</pre>
   </div>
 </div>
+
 
 </body>
 </html>
