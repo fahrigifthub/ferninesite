@@ -42,15 +42,31 @@
       margin-top: 0;
       cursor: pointer;
     }
-    input[type="text"] {
+     a {
+      color: #00ff00;
+      text-decoration: underline;
+    }
+    .content {
+      display: none;
+      margin-top: 1rem;
+    }
+    .input-row {
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+    }
+    input[type="text"], input[type="file"] {
       padding: 0.6rem;
       border-radius: 6px;
       border: 1px solid #00ff00;
       background: black;
       color: #00ff00;
       outline: none;
-      width: 100%;
-      margin-bottom: 0.5rem;
+      box-shadow: 0 0 8px #00ff00;
+    }
+    input::placeholder {
+      color: #00ff88;
+      opacity: 0.7;
     }
     button {
       padding: 0.6rem 1rem;
@@ -76,43 +92,31 @@
     }
   </style>
   <script>
-  function fetchToUrl() {
-  const fileInput = document.getElementById('inputTourl');
-  const file = fileInput.files[0];
-  const reader = new FileReader();
-
-  reader.onload = async () => {
-    try {
-      const base64 = reader.result;
-      const res = await fetch('/api/tourl', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ base64 }),
-      });
-
-      const data = await res.json();
-      const output = document.getElementById('resTourl');
-      if (data.url) {
-        output.textContent = `✅ Uploaded: ${data.url}`;
-      } else {
-        output.textContent = `❌ Error: ${data.error || 'Unknown error'}`;
-      }
-    } catch (e) {
-      document.getElementById('resTourl').textContent = `❌ Error: ${e.message}`;
+  function fetchTourl() {
+      const fileInput = document.getElementById('fileTourl');
+      const file = fileInput.files[0];
+      if (!file) return alert('Pilih file terlebih dahulu.');
+      const reader = new FileReader();
+      reader.onload = async function(e) {
+        const buffer64 = e.target.result.split(',')[1];
+        try {
+          const res = await fetch('/api/tourl', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ name: file.name, buffer64 })
+          });
+          const data = await res.json();
+          document.getElementById('resTourl').textContent = JSON.stringify(data, null, 2);
+        } catch (err) {
+          document.getElementById('resTourl').textContent = '❌ Error: ' + err.message;
+        }
+      };
+      reader.readAsDataURL(file);
     }
-  };
-
-  reader.readAsDataURL(file);
-}
-
-
-function clearTourl() {
-  document.getElementById('fileTourl').value = '';
-  document.getElementById('resTourl').textContent = 'Hasil URL akan muncul di sini...';
-}
-
+    function clearTourl() {
+      document.getElementById('fileTourl').value = "";
+      document.getElementById('resTourl').textContent = "";
+    }
     function toggleContent(id) {
       const el = document.getElementById('content-' + id);
       el.style.display = (el.style.display === 'none' || !el.style.display) ? 'block' : 'none';
@@ -155,18 +159,17 @@ function clearTourl() {
     </div>
   </div>
 
-  <!-- 🖼 /api/tourl -->
-<div class="box">
-  <h2 onclick="toggleContent('tourl')">🖼 /api/tourl</h2>
-  <div class="content" id="content-tourl">
-    <div class="input-row">
-      <input type="file" id="fileTourl">
-      <button onclick="uploadTourl()">☁️ Upload</button>
-      <button onclick="clearTourl()">🧹 Clear</button>
+<div class="endpoint-box">
+    <h3 onclick="toggleContent('tourl')">🖼 /api/tourl</h3>
+    <div class="content" id="content-tourl">
+      <div class="input-row">
+        <input type="file" id="fileTourl">
+        <button onclick="fetchTourl()">☁️ Upload</button>
+        <button onclick="clearTourl()">🧹 Clear</button>
+      </div>
+      <pre id="resTourl">Hasil upload akan muncul di sini...</pre>
     </div>
-    <pre id="resTourl">Hasil URL akan muncul di sini...</pre>
   </div>
-</div>
 
 
 </body>
