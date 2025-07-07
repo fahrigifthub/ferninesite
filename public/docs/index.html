@@ -76,33 +76,35 @@
     }
   </style>
   <script>
-    function uploadTourl() {
-  const fileInput = document.getElementById('fileTourl');
-  const resultBox = document.getElementById('resTourl');
-
-  if (!fileInput.files.length) {
-    return alert('📂 Pilih file dulu sebelum upload.');
-  }
-
+  function fetchToUrl() {
+  const fileInput = document.getElementById('inputTourl');
   const file = fileInput.files[0];
-  const formData = new FormData();
-  formData.append('file', file);
+  const reader = new FileReader();
 
-  fetch('/api/tourl', {
-    method: 'POST',
-    body: formData
-  })
-    .then(res => res.json())
-    .then(data => {
-      if (data.status) {
-        resultBox.textContent = `✅ URL: ${data.url}\n🗂 Filename: ${data.filename}\n📦 Size: ${data.size} bytes`;
+  reader.onload = async () => {
+    try {
+      const base64 = reader.result;
+      const res = await fetch('/api/tourl', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ base64 }),
+      });
+
+      const data = await res.json();
+      const output = document.getElementById('resTourl');
+      if (data.url) {
+        output.textContent = `✅ Uploaded: ${data.url}`;
       } else {
-        resultBox.textContent = `❌ Gagal: ${data.message || 'Unknown error.'}`;
+        output.textContent = `❌ Error: ${data.error || 'Unknown error'}`;
       }
-    })
-    .catch(err => {
-      resultBox.textContent = `❌ Error: ${err.message}`;
-    });
+    } catch (e) {
+      document.getElementById('resTourl').textContent = `❌ Error: ${e.message}`;
+    }
+  };
+
+  reader.readAsDataURL(file);
 }
 
 
@@ -155,7 +157,7 @@ function clearTourl() {
 
   <!-- 🖼 /api/tourl -->
 <div class="box">
-  <h3 onclick="toggleContent('tourl')">🖼 /api/tourl</h3>
+  <h2 onclick="toggleContent('tourl')">🖼 /api/tourl</h2>
   <div class="content" id="content-tourl">
     <div class="input-row">
       <input type="file" id="fileTourl">
