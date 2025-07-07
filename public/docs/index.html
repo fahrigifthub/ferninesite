@@ -1,18 +1,77 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Fernine API Docs</title>
-  <link rel="stylesheet" href="/style.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+  <style>
+    body {
+      background: radial-gradient(ellipse at top, #1e293b 0%, #0f172a 45%, #020617 100%);
+      font-family: 'Inter', sans-serif;
+      color: white;
+      margin: 0;
+      padding: 0;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 40px 20px;
+    }
+    .glass-box {
+      background: rgba(255, 255, 255, 0.04);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      backdrop-filter: blur(16px);
+      border-radius: 20px;
+      padding: 40px;
+      max-width: 720px;
+      width: 100%;
+      box-shadow: 0 30px 60px -12px rgba(59, 130, 246, 0.15);
+      position: relative;
+    }
+    .glass-box h1 {
+      font-size: 2.5rem;
+      margin-bottom: 20px;
+      background: linear-gradient(135deg, #ffffff, #cbd5e1);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+    .glass-box p {
+      color: #cbd5e1;
+      line-height: 1.6;
+      margin-bottom: 16px;
+    }
+    .glass-box ul {
+      padding-left: 20px;
+      margin: 0;
+    }
+    .glass-box li {
+      margin-bottom: 10px;
+      color: #a5b4fc;
+    }
+    a {
+      color: #60a5fa;
+      text-decoration: none;
+    }
+    a:hover {
+      text-decoration: underline;
+    }
+  </style>
 </head>
-<body style="background: #0f172a; color: white; font-family: sans-serif; padding: 40px">
-  <h1>📘 Fernine API Documentation</h1>
-  <p>Selamat datang di dokumentasi Fernine API!</p>
-  <ul>
-    <li><strong>🔍 Pinterest:</strong> <code>/api/pinterest?q=kucing</code></li>
-    <li><strong>🎵 Play:</strong> <code>/api/play?q=lagu</code></li>
-  </ul>
-  <p>Hubungi admin via <a href="https://wa.me/628xxxx" style="color:lightblue;">WhatsApp</a></p>
+<body>
+  <div class="glass-box">
+    <h1>📘 Fernine API Documentation</h1>
+    <p>Selamat datang di dokumentasi resmi <strong>Fernine API</strong>.<br>Berikut beberapa endpoint yang tersedia:</p>
+    <ul>
+      <li><strong>🔍 Pinterest Search:</strong> <code>/api/pinterest?q=anjing</code></li>
+      <li><strong>🎵 Play Music:</strong> <code>/api/play?q=sial</code></li>
+    </ul>
+    <p>💬 Hubungi admin:</p>
+    <ul>
+      <li><strong>Telegram:</strong> <a href="https://t.me/ferninex">@ferninex</a></li>
+      <li><strong>WhatsApp:</strong> <a href="https://wa.me/628xxx">628xxx</a></li>
+    </ul>
+    <p>📅 <strong>Since:</strong> 2024</p>
+  </div>
 </body>
 </html>
