@@ -1,3 +1,5 @@
+import { incrementHit, getTotalHit } from '@/utils/hitCounter'; // atau relative jika error
+
 export default async function handler(req, res) {
   const query = req.query.query;
   if (!query) {
@@ -7,7 +9,7 @@ export default async function handler(req, res) {
       creator: "ferninesite"
     });
   }
-
+incrementHit(); 
   try {
     const apiUrl = `https://api.fasturl.link/downup/ytdown-v1?name=${encodeURIComponent(query)}&format=mp3&quality=320&server=auto`;
     const response = await fetch(apiUrl);
