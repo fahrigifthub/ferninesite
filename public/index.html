@@ -1,255 +1,132 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="id">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>🌐 Ferninesite API</title>
-  <style>
-    body {
-      font-family: 'Courier New', monospace;
-      margin: 0;
-      padding: 1rem;
-      background: #000;
-      color: #00ff00;
-      background-image: linear-gradient(to bottom, #000000 0%, #0d0d0d 100%);
-    }
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>🌐 Fernine API - Layanan API Gratis & Cepat</title>
 
+  <!-- SEO Meta -->
+  <meta name="description" content="Fernine API adalah layanan REST API gratis dan cepat dengan tampilan Matrix-style futuristik. Dukungan penuh via Telegram & WhatsApp.">
+  <meta name="keywords" content="fernine api, api gratis, matrix api, rest api indonesia, public api, api cepat, api keren">
+  <meta name="author" content="Fernine Corporation">
+  <meta name="theme-color" content="#00ff00">
+
+  <!-- Open Graph -->
+  <meta property="og:title" content="🌐 Fernine API - REST API Gratis & Cepat">
+  <meta property="og:description" content="Nikmati API gratis dengan tampilan Matrix-style dan dukungan 24/7. Cocok untuk developer Indonesia.">
+  <meta property="og:image" content="https://yourdomain.com/images/og-fernine.png">
+  <meta property="og:url" content="https://api.fernine.my.id">
+  <meta property="og:type" content="website">
+
+  <!-- Twitter Card -->
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Fernine API">
+  <meta name="twitter:description" content="REST API Gratis, Tampilan Matrix-style, Akses Cepat dan Mudah.">
+  <meta name="twitter:image" content="https://yourdomain.com/images/twitter-card.png">
+
+  <!-- JSON-LD Structured Data -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "WebAPI",
+    "name": "Fernine API",
+    "description": "REST API Gratis dan Cepat dengan Tampilan Matrix-style",
+    "url": "https://api.fernine.my.id",
+    "provider": {
+      "@type": "Organization",
+      "name": "Fernine",
+      "url": "https://api.fernine.my.id"
+    },
+    "applicationCategory": "DeveloperApplication",
+    "operatingSystem": "All",
+    "offers": {
+      "@type": "Offer",
+      "price": "0",
+      "priceCurrency": "USD"
+    }
+  }
+  </script>
+
+  <!-- Styles -->
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Share+Tech+Mono&display=swap');
+    body {
+      background: black;
+      font-family: 'Share Tech Mono', monospace;
+      color: #00ff00;
+      margin: 0;
+      padding: 2rem;
+      background-image: radial-gradient(circle at center, #003300 0%, #000 80%);
+      overflow-x: hidden;
+    }
     h1 {
       text-align: center;
-      margin-bottom: 1.5rem;
-      font-size: 2rem;
       color: #00ff00;
-      text-shadow: 0 0 10px #00ff00, 0 0 20px #00ff00;
+      text-shadow: 0 0 10px #0f0, 0 0 20px #0f0;
+      font-size: 3rem;
     }
-
-    .endpoint-box {
+    .box {
       background: rgba(0, 255, 0, 0.05);
-      padding: 1rem;
+      border: 1px solid #00ff00;
+      padding: 1.5rem;
       border-radius: 10px;
-      margin-bottom: 1.2rem;
-      border: 1px solid #00ff00;
-      box-shadow: 0 0 15px rgba(0, 255, 0, 0.2);
-      transition: 0.3s ease;
+      margin: 1rem auto;
+      max-width: 700px;
+      box-shadow: 0 0 10px #0f0;
     }
-
-    .endpoint-box:hover {
-      box-shadow: 0 0 25px rgba(0, 255, 0, 0.5);
+    .box h2 {
+      color: #0f0;
+      margin-top: 0;
     }
-
-    .endpoint-box h3 {
-      margin: 0;
-      cursor: pointer;
-      font-size: 1.2rem;
-      color: #00ffcc;
-      text-shadow: 0 0 10px #00ffcc;
-    }
-
-    .content {
-      display: none;
-      margin-top: 0.8rem;
+    a {
       color: #00ff00;
+      text-decoration: underline;
     }
-
-    .input-row {
-      display: flex;
-      flex-direction: column;
-      gap: 0.5rem;
-      margin-bottom: 0.8rem;
-    }
-
-    input[type="text"] {
-      padding: 0.6rem;
-      border-radius: 6px;
-      border: 1px solid #00ff00;
-      background: black;
-      color: #00ff00;
-      outline: none;
-      box-shadow: 0 0 8px #00ff00;
-    }
-
-    input[type="text"]::placeholder {
-      color: #00ff88;
-      opacity: 0.7;
-    }
-
-    button {
-      padding: 0.6rem 1rem;
-      border: none;
-      border-radius: 6px;
-      background: linear-gradient(90deg, #00ff00, #00cc66);
-      color: black;
-      font-weight: bold;
-      cursor: pointer;
-      box-shadow: 0 0 10px #00ff00;
-      transition: 0.2s ease-in-out;
-    }
-
-    button:hover {
-      background: linear-gradient(90deg, #00ff88, #00ffaa);
-    }
-
-    pre {
-      background: #001100;
-      padding: 1rem;
-      overflow-x: auto;
-      border-radius: 10px;
-      font-size: 0.9rem;
-      color: #00ff00;
-      border: 1px solid #00ff00;
-      box-shadow: 0 0 10px #00ff00;
-    }
-
-    .btn-download {
-      display: inline-block;
-      margin-top: 0.5rem;
-      padding: 0.6rem 1rem;
-      background: #002200;
-      color: #00ff00;
-      border-radius: 6px;
-      text-decoration: none;
-      font-weight: bold;
-      border: 1px solid #00ff00;
-      box-shadow: 0 0 10px #00ff00;
+    footer {
       text-align: center;
+      margin-top: 3rem;
+      color: #00ff00a0;
+      font-size: 0.9rem;
     }
-
-    .btn-download:hover {
-      background: #004400;
-    }
-
-    audio {
-      width: 100%;
-      margin-top: 1rem;
-      filter: drop-shadow(0 0 10px #00ff00);
-    }
-
-    a:hover {
-      text-shadow: 0 0 10px #00ffcc;
+    .glow {
+      text-shadow: 0 0 5px #0f0, 0 0 10px #0f0;
     }
   </style>
+
+  <!-- Background Music -->
+  <audio autoplay loop hidden>
+    <source src="https://yourdomain.com/audio/matrix-theme.mp3" type="audio/mpeg">
+  </audio>
 </head>
 <body>
+  <h1 class="glow">🌐 Fernine API</h1>
 
-<audio autoplay loop hidden>
-  <source src="https://files.catbox.moe/q4bmns.mp3" type="audio/mpeg">
-</audio>
-
-<h1>🌐 Ferninesite API</h1>
-
-<!-- 🎵 /api/play -->
-<div class="endpoint-box">
-  <h3 onclick="toggleContent('play')">🎵 /api/play</h3>
-  <div class="content" id="content-play">
-    <div class="input-row">
-      <input type="text" id="queryPlay" placeholder="Masukkan judul lagu...">
-      <button onclick="fetchPlay()">▶️ Try Play</button>
-    </div>
-    <pre id="resPlay" class="response-box"></pre>
-    <div id="audioBox" style="margin-top:10px"></div>
+  <div class="box">
+    <h2>📌 Tentang Fernine API</h2>
+    <p>Fernine API adalah platform publik REST API gratis dan cepat dengan desain futuristik Matrix-style. Cocok untuk developer yang butuh akses cepat dan stabil.</p>
   </div>
-</div>
 
-<!-- 🔍 /search/pinterest -->
-<div class="endpoint-box">
-  <h3 onclick="toggleContent('pinterest')">🔍 /search/pinterest</h3>
-  <div class="content" id="content-pinterest">
-    <div class="input-row">
-      <input type="text" id="queryPinterest" placeholder="Cari gambar Pinterest...">
-      <button onclick="fetchPinterest()">🔎 Try Search</button>
-    </div>
-    <pre id="resPinterest">Hasil akan muncul di sini...</pre>
+  <div class="box">
+    <h2>📞 Kontak</h2>
+    <ul>
+      <li>Telegram: <a href="https://t.me/fernineapi">@fernineapi</a></li>
+      <li>WhatsApp: <a href="https://wa.me/6281234567890">+62 812-3456-7890</a></li>
+      <li>Email: <a href="mailto:support@fernine.my.id">support@fernine.my.id</a></li>
+    </ul>
   </div>
-</div>
 
-<!-- ℹ️ Informasi Footer -->
-<hr style="margin: 3rem 0; border: 1px solid #00ff00;">
+  <div class="box">
+    <h2>🚀 Dokumentasi</h2>
+    <p>Kunjungi <a href="/docs">/docs</a> untuk melihat semua endpoint dan cara penggunaannya.</p>
+  </div>
 
-<div style="text-align: center; font-family: 'Courier New', monospace; color: #00ff00;">
-  <h2 style="text-shadow: 0 0 8px #00ff00;">📡 Tentang Ferninesite API</h2>
-  <p style="max-width: 600px; margin: 0 auto;">
-    Ferninesite API adalah platform API publik yang menyediakan berbagai endpoint praktis seperti play musik, pencarian gambar, dan fitur lainnya.
-    Dikembangkan dengan semangat open-source dan eksplorasi teknologi masa depan.
-  </p>
+  <div class="box">
+    <h2>🕒 Since</h2>
+    <p>Fernine API aktif sejak <strong>2024</strong> dan terus dikembangkan oleh komunitas independen.</p>
+  </div>
 
-  <br/>
-
-  <h3 style="text-shadow: 0 0 6px #00ff00;">📬 Kontak</h3>
-  <p>
-    Telegram: <a href="https://t.me/FernineSupport" target="_blank" style="color:#00ffcc;text-decoration: none;">@FernineSupport</a><br/>
-    WhatsApp: <a href="https://wa.me/6281234567890" target="_blank" style="color:#00ffcc;text-decoration: none;">+62 812-3456-7890</a>
-  </p>
-
-  <br/>
-
-  <p style="opacity: 0.8;">
-    🕒 Since 2024<br/>
-    🔧 Maintained by <strong style="color:#00ffaa;">FahriGG Dev</strong>
-  </p>
-
-  <p style="margin-top: 1rem; font-size: 0.9rem; opacity: 0.7;">
-    © 2025 Ferninesite API - All rights reserved.
-  </p>
-</div>
-
-<script>
-function toggleContent(id) {
-  const el = document.getElementById(`content-${id}`);
-  el.style.display = el.style.display === 'block' ? 'none' : 'block';
-}
-
-async function fetchPlay() {
-  const q = document.getElementById('queryPlay').value.trim();
-  const box = document.getElementById('resPlay');
-  const audioBox = document.getElementById('audioBox');
-  if (!q) return box.textContent = '❌ Harap isi query.';
-
-  box.textContent = '⏳ Memuat...';
-  audioBox.innerHTML = '';
-
-  try {
-    const res = await fetch(`/api/play?query=${encodeURIComponent(q)}`);
-    const json = await res.json();
-
-    if (!json.status || !json.result || !json.result.media) {
-      box.textContent = `❌ Gagal!\nStatus: ${res.status}\n${json.message || 'Tidak ada hasil.'}`;
-      return;
-    }
-
-    box.textContent = JSON.stringify(json, null, 2);
-
-    const audioUrl = `/api/proxy-audio?url=${encodeURIComponent(json.result.media)}`;
-    audioBox.innerHTML = `
-      <audio controls>
-        <source src="${audioUrl}" type="audio/mpeg">
-        Browser kamu tidak support audio.
-      </audio>
-      <a href="${audioUrl}" download class="btn-download">⬇️ Download MP3</a>
-    `;
-  } catch (e) {
-    box.textContent = `❌ Error mengambil data\n${e.message}`;
-  }
-}
-
-async function fetchPinterest() {
-  const q = document.getElementById('queryPinterest').value.trim();
-  const box = document.getElementById('resPinterest');
-  box.textContent = '';
-  if (!q) return box.textContent = '❌ Harap isi kata kunci pencarian.';
-  box.textContent = '⏳ Mengambil gambar...';
-
-  try {
-    const res = await fetch(`/api/pinterest?query=${encodeURIComponent(q)}`);
-    const json = await res.json();
-    if (!json.status) {
-      box.textContent = `❌ Gagal!\n${json.message || 'Tidak ditemukan'}`;
-      return;
-    }
-    box.textContent = JSON.stringify(json, null, 2);
-  } catch (e) {
-    box.textContent = `❌ Error: ${e.message}`;
-  }
-}
-</script>
-
+  <footer>
+    <p>© 2025 Fernine API. Made with 💚 in Matrixverse.</p>
+  </footer>
 </body>
 </html>
