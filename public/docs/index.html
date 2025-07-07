@@ -98,33 +98,27 @@
   if (!file) return alert('Pilih file terlebih dahulu!');
 
   const formData = new FormData();
-  formData.append('reqtype', 'fileupload');
   formData.append('fileToUpload', file);
 
   const resultBox = document.getElementById('resTourl');
   resultBox.textContent = '⏳ Uploading...';
 
-  fetch('https://catbox.moe/user/api.php', {
+  fetch('/api/tourl', {
     method: 'POST',
     body: formData
   })
-  .then(res => {
-    if (!res.ok) throw new Error(`HTTP ${res.status} - ${res.statusText}`);
-    return res.text();
-  })
-  .then(url => {
-    resultBox.textContent = JSON.stringify({
-      url,
-      creator: "ferninesite"
-    }, null, 2);
-  })
-  .catch(err => {
-    resultBox.textContent = JSON.stringify({
-      error: "Upload failed",
-      details: err.message
-    }, null, 2);
-  });
+    .then(res => res.json())
+    .then(json => {
+      resultBox.textContent = JSON.stringify(json, null, 2);
+    })
+    .catch(err => {
+      resultBox.textContent = JSON.stringify({
+        error: "Upload failed",
+        details: err.message
+      }, null, 2);
+    });
 }
+
 
     function clearTourl() {
       document.getElementById('fileTourl').value = "";
@@ -172,7 +166,7 @@
     </div>
   </div>
 
-<div class="endpoint-box">
+<div class="box">
     <h2 onclick="toggleContent('tourl')">🖼 /api/tourl</h3>
     <div class="content" id="content-tourl">
       <div class="input-row">
