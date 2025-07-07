@@ -1,55 +1,53 @@
-// File: api/tourl.js (Final Fix)
-import { IncomingForm } from 'formidable';
-import fs from 'fs';
-import { fileTypeFromFile } from 'file-type';
+import { fileTypeFromBuffer } from 'file-type';
+import fetch from 'node-fetch';
 
 export const config = {
   api: {
-    bodyParser: false,
+    bodyParser: {
+      sizeLimit: '10mb',
+    },
   },
 };
 
 export default async function handler(req, res) {
   if (req.method !== 'POST') {
-    return res.status(405).json({ status: false, message: 'Gunakan metode POST.' });
+    return res.status(405).json({ error: 'Only POST allowed' });
   }
 
-  const form = new IncomingForm();
-  form.uploadDir = '/tmp';
-  form.keepExtensions = true;
+  try {
+    const { base64 } = req.body;
 
-  form.parse(req, async (err, fields, files) => {
-    try {
-      if (err) throw new Error('Gagal parsing form.');
-
-      const file = files.file;
-      if (!file) throw new Error('File tidak ditemukan dalam request.');
-
-      const filePath = Array.isArray(file) ? file[0].filepath : file.filepath;
-      const buffer = fs.readFileSync(filePath);
-
-      const url = await catboxUpload(buffer);
-
-      res.status(200).json({ status: true, url });
-    } catch (error) {
-      res.status(500).json({ status: false, message: error.message });
+    if (!base64) {
+      return res.status(400).json({ error: 'base64 image required' });
     }
-  });
-}
 
-async function catboxUpload(buffer) {
-  const fileType = await fileTypeFromFile(buffer);
-  const ext = fileType?.ext || 'bin';
+    const buffer = Buffer.from(base64.replace(/^data:.+;base64,/, ''), 'base64');
 
-  const formData = new FormData();
-  formData.append('reqtype', 'fileupload');
-  formData.append('fileToUpload', buffer, `file.${ext}`);
+    const { ext, mime } = (await fileTypeFromBuffer(buffer)) || {
+      ext: 'bin',
+      mime: 'application/octet-stream',
+    };
 
-  const response = await fetch('https://catbox.moe/user/api.php', {
-    method: 'POST',
-    body: formData,
-  });
+    const formData = new FormData();
+    formData.append('reqtype', 'fileupload');
+    formData.append('fileToUpload', buffer, {
+      filename: `file.${ext}`,
+      contentType: mime,
+    });
 
-  if (!response.ok) throw new Error('Gagal upload ke Catbox.');
-  return await response.text();
+    const uploadRes = await fetch('https://catbox.moe/user/api.php', {
+      method: 'POST',
+      body: formData,
+    });
+
+    const result = await uploadRes.text();
+
+    if (!result.startsWith('https://')) {
+      return res.status(500).json({ error: 'Upload failed', detail: result });
+    }
+
+    return res.status(200).json({ url: result });
+  } catch (e) {
+    return res.status(500).json({ error: e.message });
+  }
 }
