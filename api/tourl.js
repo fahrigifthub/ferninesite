@@ -3,7 +3,8 @@ import { readFile } from 'fs/promises';
 import FormData from 'form-data';
 import { fileTypeFromBuffer } from 'file-type';
 import fetch from 'node-fetch';
-
+import { incrementHit, getTotalHit } from '@/utils/hitCounter'; // atau relative jika error
+incrementHit(); // Hit bertambah setiap request berhasil masuk
 export const config = {
   api: {
     bodyParser: false,
