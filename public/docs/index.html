@@ -165,7 +165,7 @@
     output.textContent = "⏳ Mengambil source code...";
 
     try {
-      const res = await fetch(`/tool/getzip?query=${encodeURIComponent(query)}`);
+      const res = await fetch(`/api/getzip?query=${encodeURIComponent(query)}`);
       if (!res.ok) throw new Error(`HTTP ${res.status}`);
       const blob = await res.blob();
 
@@ -219,7 +219,7 @@
   </div>
 
   <div class="box">
-  <h2 onclick="toggleContent('getzip')">📦 /tool/getzip</h2>
+  <h2 onclick="toggleContent('getzip')">📦 /api/getzip</h2>
   <div id="content-getzip" style="display:none">
     <input type="text" id="queryGetzip" placeholder="Masukkan URL website...">
     <button onclick="fetchGetzip()">📥 Get ZIP</button>
