@@ -3,85 +3,44 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Fernine API Docs</title>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+  <title>📘 Fernine API Docs</title>
+
+  <!-- SEO Meta -->
+  <meta name="description" content="Dokumentasi resmi Fernine API - REST API gratis dengan tampilan Matrix-style.">
+  <meta name="keywords" content="fernine api docs, api gratis, dokumentasi api, rest api indonesia, matrix style">
+  <meta name="author" content="Fernine Corporation">
+  <meta name="theme-color" content="#00ff00">
+
+  <!-- Styles -->
   <style>
+    @import url('https://fonts.googleapis.com/css2?family=Share+Tech+Mono&display=swap');
     body {
-      background: radial-gradient(ellipse at top, #1e293b 0%, #0f172a 45%, #020617 100%);
-      font-family: 'Inter', sans-serif;
-      color: white;
-      margin: 0;
-      padding: 40px 20px;
-      min-height: 100vh;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-    }
-    .glass-box {
-      background: rgba(255, 255, 255, 0.04);
-      border: 1px solid rgba(255, 255, 255, 0.08);
-      backdrop-filter: blur(16px);
-      border-radius: 20px;
-      padding: 40px;
-      max-width: 720px;
-      width: 100%;
-      box-shadow: 0 30px 60px -12px rgba(59, 130, 246, 0.15);
-      margin-bottom: 40px;
-    }
-    .glass-box h1 {
-      font-size: 2.5rem;
-      margin-bottom: 20px;
-      background: linear-gradient(135deg, #ffffff, #cbd5e1);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-    }
-    .glass-box p, .glass-box li {
-      color: #cbd5e1;
-    }
-    .glass-box ul {
-      padding-left: 20px;
-    }
-    .glass-box li {
-      margin-bottom: 10px;
-    }
-    a {
-      color: #60a5fa;
-      text-decoration: none;
-    }
-    a:hover {
-      text-decoration: underline;
-    }
-    .endpoint-box {
-      background: rgba(0, 255, 0, 0.05);
-      padding: 1rem;
-      border-radius: 10px;
-      margin-bottom: 1.2rem;
-      border: 1px solid #00ff00;
-      box-shadow: 0 0 15px rgba(0, 255, 0, 0.2);
-      transition: 0.3s ease;
-      max-width: 720px;
-      width: 100%;
-    }
-    .endpoint-box:hover {
-      box-shadow: 0 0 25px rgba(0, 255, 0, 0.5);
-    }
-    .endpoint-box h3 {
-      margin: 0;
-      cursor: pointer;
-      font-size: 1.2rem;
-      color: #00ffcc;
-      text-shadow: 0 0 10px #00ffcc;
-    }
-    .content {
-      display: none;
-      margin-top: 0.8rem;
+      background: black;
+      font-family: 'Share Tech Mono', monospace;
       color: #00ff00;
+      margin: 0;
+      padding: 2rem;
+      background-image: radial-gradient(circle at center, #003300 0%, #000 80%);
     }
-    .input-row {
-      display: flex;
-      flex-direction: column;
-      gap: 0.5rem;
-      margin-bottom: 0.8rem;
+    h1 {
+      text-align: center;
+      color: #00ff00;
+      text-shadow: 0 0 10px #0f0, 0 0 20px #0f0;
+      font-size: 3rem;
+    }
+    .box {
+      background: rgba(0, 255, 0, 0.05);
+      border: 1px solid #00ff00;
+      padding: 1.5rem;
+      border-radius: 10px;
+      margin: 1rem auto;
+      max-width: 700px;
+      box-shadow: 0 0 10px #0f0;
+    }
+    .box h2, .box h3 {
+      color: #0f0;
+      margin-top: 0;
+      cursor: pointer;
     }
     input[type="text"] {
       padding: 0.6rem;
@@ -90,11 +49,8 @@
       background: black;
       color: #00ff00;
       outline: none;
-      box-shadow: 0 0 8px #00ff00;
-    }
-    input[type="text"]::placeholder {
-      color: #00ff88;
-      opacity: 0.7;
+      width: 100%;
+      margin-bottom: 0.5rem;
     }
     button {
       padding: 0.6rem 1rem;
@@ -111,18 +67,18 @@
       background: linear-gradient(90deg, #00ff88, #00ffaa);
     }
     pre {
-      background-color: black;
+      background: rgba(0,255,0,0.05);
+      border: 1px solid #00ff00;
       padding: 1rem;
-      border-radius: 10px;
-      color: #00ff88;
-      box-shadow: 0 0 10px rgba(0, 255, 0, 0.4);
+      color: #00ff00;
       overflow-x: auto;
+      border-radius: 8px;
     }
   </style>
   <script>
     function toggleContent(id) {
       const el = document.getElementById('content-' + id);
-      el.style.display = el.style.display === 'block' ? 'none' : 'block';
+      el.style.display = (el.style.display === 'none' || !el.style.display) ? 'block' : 'none';
     }
     function fetchPlay() {
       const query = document.getElementById('queryPlay').value;
@@ -137,46 +93,30 @@
         });
     }
     function clearOutput(id) {
-      document.getElementById(id).textContent = 'Hasil akan muncul di sini...';
+      document.getElementById(id).textContent = '';
     }
   </script>
 </head>
 <body>
-  <div class="glass-box">
-    <h1>📘 Fernine API Documentation</h1>
-    <p>Selamat datang di dokumentasi resmi <strong>Fernine API</strong>.<br>Berikut beberapa endpoint yang tersedia:</p>
-    <ul>
-      <li><strong>🔍 Pinterest Search:</strong> <code>/api/pinterest?query=anjing</code></li>
-      <li><strong>🎵 Play Music:</strong> <code>/api/play?query=sial</code></li>
-    </ul>
-    <p>💬 Hubungi admin:</p>
-    <ul>
-      <li><strong>Telegram:</strong> <a href="https://t.me/ferninex">@ferninex</a></li>
-      <li><strong>WhatsApp:</strong> <a href="https://wa.me/628xxx">628xxx</a></li>
-    </ul>
-    <p>📅 <strong>Since:</strong> 2024</p>
-  </div>
+  <h1 class="glow">📘 Fernine API Docs</h1>
 
-  <div class="endpoint-box">
-    <h3 onclick="toggleContent('play')">🎵 /api/play</h3>
-    <div class="content" id="content-play">
-      <div class="input-row">
-        <input type="text" id="queryPlay" placeholder="Masukkan judul lagu...">
-        <button onclick="fetchPlay()">▶️ Try Play</button>
-      </div>
+  <div class="box">
+    <h2 onclick="toggleContent('play')">🎵 /api/play</h2>
+    <div id="content-play" style="display:none">
+      <input type="text" id="queryPlay" placeholder="Masukkan judul lagu...">
+      <button onclick="fetchPlay()">▶️ Try Play</button>
     </div>
   </div>
 
-  <div class="endpoint-box">
-    <h3 onclick="toggleContent('pinterest')">🔍 /search/pinterest</h3>
-    <div class="content" id="content-pinterest">
-      <div class="input-row">
-        <input type="text" id="queryPinterest" placeholder="Cari gambar Pinterest...">
-        <button onclick="fetchPinterest()">🔎 Try Search</button>
-        <button onclick="clearOutput('resPinterest')">🧹 Clear Output</button>
-      </div>
+  <div class="box">
+    <h2 onclick="toggleContent('pinterest')">🔍 /search/pinterest</h2>
+    <div id="content-pinterest" style="display:none">
+      <input type="text" id="queryPinterest" placeholder="Cari gambar Pinterest...">
+      <button onclick="fetchPinterest()">🔎 Try Search</button>
+      <button onclick="clearOutput('resPinterest')">❌ Clear Output</button>
       <pre id="resPinterest">Hasil akan muncul di sini...</pre>
     </div>
   </div>
+
 </body>
 </html>
