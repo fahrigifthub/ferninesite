@@ -60,6 +60,16 @@
     .catch(() => {
       document.getElementById('ip-address').textContent = "Gagal memuat IP";
     });
+
+  fetch('/api/hits')
+    .then(res => res.json())
+    .then(data => {
+      document.getElementById('total-req').textContent = data.total;
+    })
+    .catch(() => {
+      document.getElementById('total-req').textContent = "Error";
+    });
+
   </script>
 
   <!-- Styles -->
