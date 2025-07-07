@@ -9,7 +9,7 @@ export default async function handler(req, res) {
       message: "Query parameter 'query' is required.",
     });
   }
-incrementHit(); 
+
   try {
     const response = await fetch(`https://api.siputzx.my.id/api/s/pinterest?query=${encodeURIComponent(query)}`);
     const data = await response.json();
