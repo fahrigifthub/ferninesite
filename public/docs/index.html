@@ -144,6 +144,46 @@
       document.getElementById(id).textContent = '';
     }
   </script>
+  <script>
+  function toggleContent(id) {
+    const el = document.getElementById(`content-${id}`);
+    el.style.display = el.style.display === "none" ? "block" : "none";
+  }
+
+  function clearOutput(id) {
+    document.getElementById(id).textContent = "Hasil akan muncul di sini...";
+  }
+
+  async function fetchGetzip() {
+    const query = document.getElementById("queryGetzip").value.trim();
+    const output = document.getElementById("resGetzip");
+
+    if (!query.startsWith("http")) {
+      return output.textContent = "❌ Masukkan URL valid yang dimulai dengan http atau https.";
+    }
+
+    output.textContent = "⏳ Mengambil source code...";
+
+    try {
+      const res = await fetch(`/tool/getzip?query=${encodeURIComponent(query)}`);
+      if (!res.ok) throw new Error(`HTTP ${res.status}`);
+      const blob = await res.blob();
+
+      const filename = `source-${new URL(query).hostname}.zip`;
+      const url = URL.createObjectURL(blob);
+
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = filename;
+      a.click();
+
+      output.textContent = `✅ Source ZIP berhasil dibuat dan sedang diunduh.\n📁 Filename: ${filename}`;
+    } catch (err) {
+      output.textContent = `❌ Error: ${err.message}`;
+    }
+  }
+</script>
+
 </head>
 <body>
   <h1 class="glow">📘 Fernine API Docs</h1>
@@ -177,6 +217,16 @@
       <pre id="resTourl">Hasil upload akan muncul di sini...</pre>
     </div>
   </div>
+
+  <div class="box">
+  <h2 onclick="toggleContent('getzip')">📦 /tool/getzip</h2>
+  <div id="content-getzip" style="display:none">
+    <input type="text" id="queryGetzip" placeholder="Masukkan URL website...">
+    <button onclick="fetchGetzip()">📥 Get ZIP</button>
+    <button onclick="clearOutput('resGetzip')">❌ Clear Output</button>
+    <pre id="resGetzip">Hasil akan muncul di sini...</pre>
+  </div>
+</div>
 
 
 </body>
