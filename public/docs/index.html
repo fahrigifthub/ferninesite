@@ -93,26 +93,39 @@
   </style>
   <script>
   function fetchTourl() {
-      const fileInput = document.getElementById('fileTourl');
-      const file = fileInput.files[0];
-      if (!file) return alert('Pilih file terlebih dahulu.');
-      const reader = new FileReader();
-      reader.onload = async function(e) {
-        const buffer64 = e.target.result.split(',')[1];
-        try {
-          const res = await fetch('/api/tourl', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ name: file.name, buffer64 })
-          });
-          const data = await res.json();
-          document.getElementById('resTourl').textContent = JSON.stringify(data, null, 2);
-        } catch (err) {
-          document.getElementById('resTourl').textContent = '❌ Error: ' + err.message;
-        }
-      };
-      reader.readAsDataURL(file);
-    }
+  const fileInput = document.getElementById('fileTourl');
+  const file = fileInput.files[0];
+  if (!file) return alert('Pilih file terlebih dahulu!');
+
+  const formData = new FormData();
+  formData.append('reqtype', 'fileupload');
+  formData.append('fileToUpload', file);
+
+  const resultBox = document.getElementById('resTourl');
+  resultBox.textContent = '⏳ Uploading...';
+
+  fetch('https://catbox.moe/user/api.php', {
+    method: 'POST',
+    body: formData
+  })
+  .then(res => {
+    if (!res.ok) throw new Error(`HTTP ${res.status} - ${res.statusText}`);
+    return res.text();
+  })
+  .then(url => {
+    resultBox.textContent = JSON.stringify({
+      url,
+      creator: "ferninesite"
+    }, null, 2);
+  })
+  .catch(err => {
+    resultBox.textContent = JSON.stringify({
+      error: "Upload failed",
+      details: err.message
+    }, null, 2);
+  });
+}
+
     function clearTourl() {
       document.getElementById('fileTourl').value = "";
       document.getElementById('resTourl').textContent = "";
@@ -160,7 +173,7 @@
   </div>
 
 <div class="endpoint-box">
-    <h3 onclick="toggleContent('tourl')">🖼 /api/tourl</h3>
+    <h2 onclick="toggleContent('tourl')">🖼 /api/tourl</h3>
     <div class="content" id="content-tourl">
       <div class="input-row">
         <input type="file" id="fileTourl">
