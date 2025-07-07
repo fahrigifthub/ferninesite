@@ -1,5 +1,6 @@
+// /api/tourl.js (FINAL FIX)
+import FormData from 'form-data';
 import { fileTypeFromBuffer } from 'file-type';
-import fetch from 'node-fetch';
 
 export const config = {
   api: {
@@ -11,43 +12,54 @@ export const config = {
 
 export default async function handler(req, res) {
   if (req.method !== 'POST') {
-    return res.status(405).json({ error: 'Only POST allowed' });
+    return res.status(405).json({ error: 'Method not allowed. Use POST.' });
+  }
+
+  const { name, buffer64 } = req.body;
+  if (!name || !buffer64) {
+    return res.status(400).json({ error: 'Missing name or buffer64 (base64 data)' });
   }
 
   try {
-    const { base64 } = req.body;
-
-    if (!base64) {
-      return res.status(400).json({ error: 'base64 image required' });
-    }
-
-    const buffer = Buffer.from(base64.replace(/^data:.+;base64,/, ''), 'base64');
+    const base64Data = buffer64.replace(/^data:.*?base64,/, '');
+    const buffer = Buffer.from(base64Data, 'base64');
 
     const { ext, mime } = (await fileTypeFromBuffer(buffer)) || {
       ext: 'bin',
       mime: 'application/octet-stream',
     };
 
-    const formData = new FormData();
-    formData.append('reqtype', 'fileupload');
-    formData.append('fileToUpload', buffer, {
-      filename: `file.${ext}`,
+    const form = new FormData();
+    form.append('reqtype', 'fileupload');
+    form.append('fileToUpload', buffer, {
+      filename: name || `file.${ext}`,
       contentType: mime,
     });
 
-    const uploadRes = await fetch('https://catbox.moe/user/api.php', {
+    const response = await fetch('https://catbox.moe/user/api.php', {
       method: 'POST',
-      body: formData,
+      body: form,
     });
 
-    const result = await uploadRes.text();
-
-    if (!result.startsWith('https://')) {
-      return res.status(500).json({ error: 'Upload failed', detail: result });
+    if (!response.ok) {
+      const text = await response.text();
+      return res.status(500).json({ error: 'Upload failed', details: text });
     }
 
-    return res.status(200).json({ url: result });
-  } catch (e) {
-    return res.status(500).json({ error: e.message });
+    const url = await response.text();
+
+    if (!url.startsWith('https://')) {
+      return res.status(500).json({ error: 'Upload failed', response: url });
+    }
+
+    return res.status(200).json({
+      url,
+      creator: 'ferninesite',
+    });
+  } catch (err) {
+    return res.status(500).json({
+      error: 'Exception occurred',
+      message: err.message || err,
+    });
   }
 }
