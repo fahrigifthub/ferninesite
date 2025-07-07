@@ -16,7 +16,7 @@ export default async function handler(req, res) {
   }
 
   try {
-    const form = new IncomingForm({ maxFileSize: 10 * 1024 * 1024 }); // 10MB
+    const form = new IncomingForm({ maxFileSize: 10 * 1024 * 1024 });
 
     const files = await new Promise((resolve, reject) => {
       form.parse(req, (err, fields, files) => {
@@ -56,14 +56,22 @@ export default async function handler(req, res) {
     const url = await uploadRes.text();
 
     return res.status(200).json({
-      url,
+      status: true,
+      result: {
+        url,
+        type: mime,
+        size: buffer.length,
+        ext
+      },
       creator: "ferninesite",
     });
 
   } catch (e) {
     return res.status(500).json({
+      status: false,
       error: "Upload failed",
       details: e.message || String(e),
+      creator: "ferninesite"
     });
   }
 }
